@@ -8,47 +8,38 @@ fun main() {
 }
 
 fun part1(input: String, regex: Regex): Int {
-    val matches = regex.findAll(input)
-    var interMediateResult = 0
-    matches.forEach { match ->
-        val stringed = match.value.removePrefix("mul(").removeSuffix(")")
-        val parts = stringed.split(",")
-        val part1 = parts[0].toInt()
-        val part2 = parts[1].toInt()
-        val product = part1 * part2
-        interMediateResult += product
-    }
-
-    return interMediateResult
+    return regex.findAll(input)
+        .map { match ->
+            match.value.removePrefix("mul(").removeSuffix(")")
+                .split(",")
+                .let { (a, b) -> a.toInt() * b.toInt() }
+        }
+        .sum()
 }
 
 fun part2(input: String, regexInstruction: Regex, regex: Regex): Int {
-    val matchesInstructed = regexInstruction.findAll(input)
+    val matches = regexInstruction.findAll(input)
     var doMultiplication = true
     var start = 0
-    var end = 0
     var result = 0
-    val lastRange = input.length
-    for (match in matchesInstructed) {
-        if (match.value == "do()") {
-            if (!doMultiplication) {
+
+    for (match in matches) {
+        when (match.value) {
+            "do()" -> if (!doMultiplication) {
                 doMultiplication = true
                 start = match.range.first
             }
-        }
-        if (match.value == "don't()") {
-            if (doMultiplication) {
+            "don't()" -> if (doMultiplication) {
                 doMultiplication = false
-                end = match.range.last
-                val lineWithDos = input.substring(start, end)
+                val lineWithDos = input.substring(start, match.range.last)
                 result += part1(lineWithDos, regex)
             }
         }
     }
-    if (start >= end) {
-        end = lastRange
-        val lineWithDos = input.substring(start, end)
-        result += part1(lineWithDos, regex)
+
+    if (doMultiplication) {
+        result += part1(input.substring(start), regex)
     }
+
     return result
 }
