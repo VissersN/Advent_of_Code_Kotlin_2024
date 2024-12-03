@@ -1,21 +1,33 @@
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
-    }
-
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
-
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
-
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    val seperatedList1 = mutableListOf<Int>()
+    val seperatedList2 = mutableListOf<Int>()
+    var total: Int = 0
+    val splittedInput = input.map { it.split(" ").toList().filter { it.isNotBlank() } }
+    splittedInput.forEach {
+        seperatedList1.add(it[0].toInt())
+        seperatedList2.add(it[1].toInt())
+    }
+
+    fun part1() {
+        seperatedList1.sort()
+        seperatedList2.sort()
+        for (i in seperatedList1.indices) {
+            val difference = abs(seperatedList1[i] - seperatedList2[i])
+            println(difference)
+            total += difference
+        }
+        println("Totale som van verschillen: $total")
+    }
+
+    fun part2() {
+        for (i in seperatedList1.indices) {
+            val numAppereances = seperatedList2.count { it == seperatedList1[i]  }
+            total += numAppereances * seperatedList1[i]
+        }
+        println("Totaal: $total")
+    }
+    part2()
 }
