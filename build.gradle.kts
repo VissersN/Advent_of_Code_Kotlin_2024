@@ -13,3 +13,6 @@ tasks {
         gradleVersion = "8.11.1"
     }
 }
+dependencies {
+    implementation("net.objecthunter:exp4j:0.4.8")
+}
